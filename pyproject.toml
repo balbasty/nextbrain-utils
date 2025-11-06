@@ -1,0 +1,103 @@
+[project]
+name = "nextbrain-utils"
+authors = [{name = "Yael Balbastre", email = "y.balbastre@ucl.ac.uk"}]
+maintainers = [{name = "Yael Balbastre", email = "y.balbastre@ucl.ac.uk"}]
+description = "Utility tools to work with NextBrain segmentations"
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "torch",
+    "torch-interpol",
+    "nibabel",
+]
+version = "0.0.1"
+
+[project.urls]
+Homepage = "https://github.com/balbasty/nextbrain-utils"
+Issues = "https://github.com/balbasty/nextbrain-utils/issues"
+
+[build-system]
+requires = [
+  "setuptools >= 61.0",
+  "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+# Comment -> use flat-layout auto discovery instead
+# [tool.setuptools]
+# packages = ["nextbrain_utils"]
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "."
+]
+testpaths = [
+  "nextbrain_utils/tests"
+]
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.ruff]
+exclude = [
+  ".bzr",
+  ".direnv",
+  ".eggs",
+  ".git",
+  ".git-rewrite",
+  ".hg",
+  ".mypy_cache",
+  ".nox",
+  ".pants.d",
+  ".pytype",
+  ".ruff_cache",
+  ".svn",
+  ".tox",
+  ".venv",
+  "__pypackages__",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+  "node_modules",
+  "venv"
+]
+line-length = 88
+indent-width = 4
+src = ["."]
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["ANN", "D", "E", "F", "I"]
+ignore = [
+  "ANN002",  # args should not be annotated
+  "ANN003",  # kwargs should not be annotated
+  "ANN101",  # self should not be annotated.
+  "ANN102",  # cls should not be annotated.
+  "D105",    # Missing docstring in magic method
+  "D205"     # 1 blank line required between summary line and description -> triggered in __init__ docstrings
+]
+fixable = ["ALL"]
+unfixable = []
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.per-file-ignores]
+"ngtools/tests/*.py" = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
