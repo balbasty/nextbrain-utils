@@ -15,8 +15,6 @@ classifiers = [
 requires-python = ">=3.10"
 dependencies = [
     "numpy",
-    "torch",
-    "torch-interpol",
     "nibabel",
 ]
 version = "0.0.1"
