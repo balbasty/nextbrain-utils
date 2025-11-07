@@ -1,8 +1,12 @@
 """Combine left and right sides into a single file."""
+__author__ = "Yael Balbastre"
+
+# std
 import os.path as op
 from itertools import product
 from pathlib import Path
 
+# externals
 import nibabel as nb
 import numpy as np
 from nibabel.spatialimages import SpatialImage
@@ -13,8 +17,8 @@ PathLike = str | Path
 def combine_hemis(
     left: PathLike | SpatialImage,
     right: PathLike | SpatialImage,
-    save: bool | PathLike = True,
-    save_sides: bool | PathLike = True,
+    save: PathLike | bool = True,
+    save_sides: PathLike | bool = True,
 ) -> SpatialImage:
     """
     Combine NextBrain hemispheres into a single file.
@@ -94,16 +98,17 @@ def combine_hemis(
 
     # combine
     out = np.zeros(shape, dtype=left.dataobj.dtype)
-    out[left_bbox] += left.dataobj
-    out[right_bbox] += right.dataobj
+    out[left_bbox] = left.dataobj
+    out[right_bbox] += right.dataobj * (out[right_bbox] == 0)
 
     # create nibabel spatial object
     out = type(left)(out, affine, left.header)
 
     # same for left/right mask
     msk = np.zeros(shape, dtype="u1")
-    msk[left_bbox] += (np.asarray(left.dataobj) > 0) * np.uint8(1)
-    msk[right_bbox] += (np.asarray(right.dataobj) > 0) * np.uint8(2)
+    msk[left_bbox] = (np.asarray(left.dataobj) > 0) * np.uint8(1)
+    tmp = msk[right_bbox] == 0
+    msk[right_bbox] += (np.asarray(right.dataobj) > 0) * np.uint8(2) * tmp
 
     msk_header = left.header
     msk_header.set_data_dtype("u1")
