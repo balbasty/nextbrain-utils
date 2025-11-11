@@ -38,6 +38,9 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.package-data]
 nextbrain_utils = ["lut/*.txt", "lut/*.json", "lut/*.yaml"]
 
+[project.scripts]
+nextbrain-utils = "nextbrain_utils.cli:main"
+
 [tool.pytest.ini_options]
 pythonpath = [
   "."

@@ -20,7 +20,7 @@ from .to_supersynth import to_supersynth
 # ----------------------------------------------------------------------
 
 parser = ArgumentParser(
-    "nextbrain_utils",
+    "nextbrain-utils",
     formatter_class=ArgumentDefaultsHelpFormatter,
 )
 subparsers = parser.add_subparsers(required=True)
@@ -503,5 +503,7 @@ parser_lut.set_defaults(func=_allen_lut)
 # ----------------------------------------------------------------------
 #   Parse and run
 # ----------------------------------------------------------------------
-args = parser.parse_args()
-args.func(args)
+def main() -> None:
+    """Run the command-line interface."""
+    args = parser.parse_args()
+    args.func(args)
