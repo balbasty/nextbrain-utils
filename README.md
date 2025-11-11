@@ -70,6 +70,41 @@ python -m nextbrain_utils allen \
     -c dev
 ```
 
+#### Simplify an Allen segmentation map
+
+```shell
+python -m nextbrain_utils simplify \
+    -i seg.allen.nii.gz \
+    -o seg.simple.nii.gz \
+    -l AMY ATA EXA Ca Pu NAC GP Cla BF THM SubTH HTH HIP
+```
+
+The list of labels to collapse can be long names, acronyms or IDs from
+the Allen ontology.
+
+Then Allen ontology can br browsed online:
+
+* [Allen ontology, Developmental/Brodmann labels](https://atlas.brain-map.org/atlas?atlas=265297126#atlas=265297126&structure=10390)
+* [Allen ontology, Gyral labels](https://atlas.brain-map.org/atlas?atlas=138322605#atlas=138322605&structure=10390)
+
+#### Convert NextBrain labels to ASeg+AParc labels
+
+```shell
+python -m nextbrain_utils aseg \
+    -i seg.both.nii.gz \
+    -o seg.aseg.aparc.nii.gz \
+    -s sides.nii.gz
+```
+
+#### Convert NextBrain labels to SuperSynth labels
+
+```shell
+python -m nextbrain_utils supersynth \
+    -i seg.both.nii.gz \
+    -o seg.supersynth.nii.gz\
+    -s sides.nii.gz
+```
+
 #### Generate an Allen lookup table compatible with Freesurfer
 
 ```shell
@@ -87,20 +122,3 @@ python -m nextbrain_utils lut \
     -l allen+dk \
     -a
 ```
-
-#### Simplify an Allen segmentation map
-
-```shell
-python -m nextbrain_utils simplify \
-    -i seg.allen.nii.gz \
-    -o seg.simple.nii.gz \
-    -l AMY ATA EXA Ca Pu NAC GP Cla BF THM SubTH HTH HIP
-```
-
-The list of labels to collapse can be long names, acronyms or IDs from
-the Allen ontology.
-
-Then Allen ontology can br browsed online:
-
-* [Allen ontology, Developmental/Brodmann labels](https://atlas.brain-map.org/atlas?atlas=265297126#atlas=265297126&structure=10390)
-* [Allen ontology, Gyral labels](https://atlas.brain-map.org/atlas?atlas=138322605#atlas=138322605&structure=10390)
