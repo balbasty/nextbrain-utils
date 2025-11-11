@@ -16,6 +16,7 @@ requires-python = ">=3.10"
 dependencies = [
     "numpy",
     "nibabel",
+    "pyyaml",
 ]
 version = "0.0.1"
 
@@ -35,7 +36,7 @@ build-backend = "setuptools.build_meta"
 # packages = ["nextbrain_utils"]
 
 [tool.setuptools.package-data]
-nextbrain_utils = ["lut/*.txt", "lut/*.json"]
+nextbrain_utils = ["lut/*.txt", "lut/*.json", "lut/*.yaml"]
 
 [tool.pytest.ini_options]
 pythonpath = [

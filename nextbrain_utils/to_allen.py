@@ -2,7 +2,6 @@
 __author__ = "Yael Balbastre, Laura Boettcher"
 
 # std
-import json
 import os.path as op
 import re
 from enum import StrEnum
@@ -14,19 +13,12 @@ import numpy as np
 from nibabel.spatialimages import SpatialImage
 from numpy.typing import ArrayLike
 
+from nextbrain_utils.io import load_lut, load_ontology
+
 PATH_ALLEN = op.join(op.dirname(__file__), "lut", "AllenBrainOntologyDev.json")
 PATH_NEXTBRAIN = op.join(op.dirname(__file__), "lut", "NextBrainLUT.txt")
 
 PathLike = str | Path
-
-LUT_DTYPE = np.dtype([
-    ("ID", "i8"),
-    ("NAME", "S256"),
-    ("R", "u8"),
-    ("G", "u8"),
-    ("B", "u8"),
-    ("A", "u8"),
-])
 
 
 class CortexOntology(StrEnum):
@@ -37,33 +29,141 @@ class CortexOntology(StrEnum):
     dk = desikankilliany = "desikan-killiany"
 
 
+def to_allen(
+    nextbrain: PathLike | SpatialImage | ArrayLike,
+    ontology: CortexOntology | str = CortexOntology.gyral,
+    save: PathLike | bool = False
+) -> SpatialImage | np.ndarray:
+    """
+    Convert NextBrain labels to Allen ontology labels.
+
+    Parameters
+    ----------
+    nextbrain : PathLike | nb.SpatialImage
+        NextBrain segmentation.
+    side : PathLike | nb.SpatialImage | {"left", "right"}, optional
+        Side of the input hemisphere: left, right,
+        or a lateralization mask if the input contains both hemispheres.
+    save:  PathLike | bool = True
+        Whether to save the converted segmentation to disk.
+
+    Returns
+    -------
+    allen: SpatialImage
+        Allen segmentation.
+    """
+    ontology = _ensure_cortex_onto(ontology)
+
+    # load/preprocess data
+    if isinstance(nextbrain, (str, Path)):
+        nextbrain = nb.load(nextbrain)
+
+    if isinstance(nextbrain, SpatialImage):
+        nextbrain_dat = nextbrain.dataobj
+    else:
+        nextbrain_dat = nextbrain
+
+    # prepare linear label maps
+    nextbrain2allen = get_nextbrain2allen_map(ontology)
+
+    # perform mapping
+    allen_dat = nextbrain2allen[np.asarray(nextbrain_dat)]
+
+    # make SpatialImage
+    if isinstance(nextbrain, SpatialImage):
+        header = nextbrain.header
+        header.set_data_dtype(allen_dat.dtype)
+        allen = type(nextbrain)(allen_dat, None, header)
+    else:
+        allen = nb.Nifti1Image(allen_dat)
+
+    # save
+    if save:
+        fname = None
+        if isinstance(nextbrain, SpatialImage):
+            fname = nextbrain.file_map["image"].filename
+        if isinstance(fname, str):
+            dirname = op.dirname(fname)
+            basename = op.basename(fname)
+            basename, ext = op.splitext(basename)
+            if ext in (".gz", ".bz2"):
+                compression = ext
+                basename, ext = op.splitext(basename)
+                ext += compression
+        else:
+            dirname = op.curdir
+            basename = "seg"
+            ext = ".nii.gz"
+        basename += ".{ontology}"
+
+        if save is True:
+            save = f"{dirname}/{basename}{ext}"
+            save = save.format(ontology=str(ontology))
+
+        nb.save(allen, save)
+        allen = nb.load(save)
+
+    # return
+    if isinstance(nextbrain, SpatialImage):
+        return allen
+    else:
+        return allen_dat
+
+
+def get_nextbrain2allen_map(
+    cortex_ontology: CortexOntology = CortexOntology.gyral
+) -> np.ndarray:
+    """Compute linear label maps."""
+    cortex_ontology = _ensure_cortex_onto(cortex_ontology)
+
+    # load lookup tables
+    nextbrain_lut = load_lut()
+    allen_ont = load_ontology()
+    allen_dtype = 'i4'
+
+    # prepare linear label maps
+    max_nextbrain_label = nextbrain_lut["ID"].max()
+    nextbrain2allen = np.arange(max_nextbrain_label+1, dtype=allen_dtype)
+
+    # normalize nextbrain names
+    nextbrain_norm = {
+        elem: normalize_name(elem)
+        for elem in nextbrain_lut.names
+        if not elem.startswith("ctx-lh-")  # nextbrain always uses RH labels
+    }
+
+    # hand-fix cortical names
+    if cortex_ontology == CortexOntology.gyral:
+        cortex_map = _fscortex_to_allen_gyral()
+    elif cortex_ontology == CortexOntology.developmental:
+        cortex_map = _fscortex_to_allen_dev()
+    else:
+        cortex_map = None
+    if cortex_map:
+        for key in nextbrain_norm.keys():
+            if key.startswith("ctx-"):
+                nextbrain_norm[key] = cortex_map[key[7:]]
+
+    # Map NextBrain labels to Allen labels
+    def _recurse(ont: dict) -> None:
+        allen_norm = normalize_name(ont["name"])
+        for nxb_orig, nbx_norm in nextbrain_norm.items():
+            if allen_norm == nbx_norm:
+                nxb_label = nextbrain_lut[
+                    nextbrain_lut["NAME"] == nxb_orig.encode()
+                ]["ID"]
+                for nxb_label1 in nxb_label:
+                    nextbrain2allen[nxb_label1] = ont["id"]
+        for child in ont.get("children", []):
+            _recurse(child)
+
+    _recurse(allen_ont)
+
+    return nextbrain2allen
+
+
 def _ensure_cortex_onto(x: str | CortexOntology) -> CortexOntology:
     return CortexOntology(getattr(CortexOntology, x, x))
-
-
-def load_allen_ontology(fname: PathLike = PATH_ALLEN) -> np.ndarray:
-    """Load the allen ontology in JSON format."""
-    with open(fname) as f:
-        allen = json.load(f)
-    return allen
-
-
-def load_nextbrain_lut(fname: PathLike = PATH_NEXTBRAIN) -> np.ndarray:
-    """Load the nextbrain lookup in numpy format."""
-    text = []
-    with open(fname) as f:
-        for line in f:
-            line = line.split("#")[0].strip()
-            if not line:
-                continue
-            label, name, *color = line.split()
-            label, *color = map(int, (label, *color))
-            text.append((label, name, *color))
-
-    lut = np.ndarray([len(text)], dtype=LUT_DTYPE)
-    for i, line in enumerate(text):
-        lut[i] = line
-    return lut
 
 
 def normalize_name(name: str) -> str:
@@ -188,8 +288,8 @@ def _fscortex_to_allen_gyral() -> dict:
     convert["medialorbitofrontal"] = "gyrus rectus (straight gyrus)"
     convert["middletemporal"] = "middle temporal gyrus"
     convert["parahippocampal"] = "posterior parahippocampal gyrus"
-    convert["paracentral"] = "paracentral lobule caudal part"
-    convert["parsopercularis"] = "inferior frontal gyrus, opercular part"
+    convert["paracentral"] = "paracentral lobule rostral part"
+    convert["parsopercularis"] = "inferior frontal gyrus opercular part"
     convert["parsorbitalis"] = "inferior frontal gyrus orbital part"
     convert["parstriangularis"] = "inferior frontal gyrus triangular part"
     convert["pericalcarine"] = "occipital lobe"
@@ -200,7 +300,7 @@ def _fscortex_to_allen_gyral() -> dict:
     convert["rostralanteriorcingulate"] = "cingulate gyrus rostral (anterior) part"  # noqa: E501
     convert["rostralmiddlefrontal"] = "middle frontal gyrus"
     convert["superiorfrontal"] = "superior frontal gyrus"
-    convert["superiorparietal"] = ""
+    convert["superiorparietal"] = "supraparietal lobule"
     convert["superiortemporal"] = "superior temporal gyrus"
     convert["supramarginal"] = "supramarginal gyrus"
     convert["frontalpole"] = "frontal pole"
@@ -233,7 +333,7 @@ def _fscortex_to_allen_dev() -> dict:
     convert["medialorbitofrontal"] = "frontal neocortex"
     convert["middletemporal"] = "temporal neocortex"
     convert["parahippocampal"] = "periarchicortex"
-    convert["paracentral"] = "parietal neocortex"
+    convert["paracentral"] = "frontal neocortex"
     convert["parsopercularis"] = "frontal neocortex"
     convert["parsorbitalis"] = "frontal neocortex"
     convert["parstriangularis"] = "frontal neocortex"
@@ -253,135 +353,3 @@ def _fscortex_to_allen_dev() -> dict:
     convert["transversetemporal"] = "temporal neocortex"
     convert["insula"] = "insular neocortex"
     return convert
-
-
-def get_nextbrain2allen_map(
-    cortex_ontology: CortexOntology = CortexOntology.gyral
-) -> np.ndarray:
-    """Compute linear label maps."""
-    cortex_ontology = _ensure_cortex_onto(cortex_ontology)
-
-    # load lookup tables
-    nextbrain_lut = load_nextbrain_lut()
-    allen_ont = load_allen_ontology()
-    allen_dtype = 'i4'
-
-    # prepare linear label maps
-    max_nextbrain_label = nextbrain_lut["ID"].max()
-    nextbrain2allen = np.arange(max_nextbrain_label+1, dtype=allen_dtype)
-
-    # normalize nextbrain names
-    nextbrain_norm = {
-        elem: normalize_name(elem)
-        for elem in map(bytes.decode, nextbrain_lut["NAME"])
-        if not elem.startswith("ctx-lh-")  # nextbrain always uses RH labels
-    }
-
-    # hand-fix cortical names
-    if cortex_ontology == CortexOntology.gyral:
-        cortex_map = _fscortex_to_allen_gyral()
-    elif cortex_ontology == CortexOntology.developmental:
-        cortex_map = _fscortex_to_allen_dev()
-    else:
-        cortex_map = None
-    if cortex_map:
-        for key in nextbrain_norm.keys():
-            if key.startswith("ctx-"):
-                nextbrain_norm[key] = cortex_map[key[7:]]
-
-    # Map NextBrain labels to Allen labels
-    def _recurse(ont: dict) -> None:
-        allen_norm = normalize_name(ont["name"])
-        for nxb_orig, nbx_norm in nextbrain_norm.items():
-            if allen_norm == nbx_norm:
-                nxb_label = nextbrain_lut[
-                    nextbrain_lut["NAME"] == nxb_orig.encode()
-                ]["ID"]
-                for nxb_label1 in nxb_label:
-                    nextbrain2allen[nxb_label1] = ont["id"]
-        for child in ont.get("children", []):
-            _recurse(child)
-
-    _recurse(allen_ont)
-
-    return nextbrain2allen
-
-
-def to_allen(
-    nextbrain: PathLike | SpatialImage | ArrayLike,
-    ontology: CortexOntology | str = CortexOntology.gyral,
-    save: PathLike | bool = False
-) -> SpatialImage | np.ndarray:
-    """
-    Convert NextBrain labels to Allen ontology labels.
-
-    Parameters
-    ----------
-    nextbrain : PathLike | nb.SpatialImage
-        NextBrain segmentation.
-    side : PathLike | nb.SpatialImage | {"left", "right"}, optional
-        Side of the input hemisphere: left, right,
-        or a lateralization mask if the input contains both hemispheres.
-    save:  PathLike | bool = True
-        Whether to save the converted segmentation to disk.
-
-    Returns
-    -------
-    allen: SpatialImage
-        Allen segmentation.
-    """
-    ontology = _ensure_cortex_onto(ontology)
-
-    # load/preprocess data
-    if isinstance(nextbrain, (str, Path)):
-        nextbrain = nb.load(nextbrain)
-
-    if isinstance(nextbrain, SpatialImage):
-        nextbrain_dat = nextbrain.dataobj
-    else:
-        nextbrain_dat = nextbrain
-
-    # prepare linear label maps
-    nextbrain2allen = get_nextbrain2allen_map(ontology)
-
-    # perform mapping
-    allen_dat = nextbrain2allen[np.asarray(nextbrain_dat)]
-
-    if isinstance(nextbrain, SpatialImage):
-        header = nextbrain.header
-        header.set_data_dtype(allen_dat.dtype)
-        allen = type(nextbrain)(allen_dat, None, header)
-    else:
-        allen = nb.Nifti1Image(allen_dat)
-
-    # save
-    if save:
-        fname = None
-        if isinstance(nextbrain, SpatialImage):
-            fname = nextbrain.file_map["image"].filename
-        if isinstance(fname, str):
-            dirname = op.dirname(fname)
-            basename = op.basename(fname)
-            basename, ext = op.splitext(basename)
-            if ext in (".gz", ".bz2"):
-                compression = ext
-                basename, ext = op.splitext(basename)
-                ext += compression
-        else:
-            dirname = op.curdir
-            basename = "seg"
-            ext = ".nii.gz"
-        basename += ".{ontology}"
-
-        if save is True:
-            save = f"{dirname}/{basename}{ext}"
-            save = save.format(ontology=str(ontology))
-
-        nb.save(allen, save)
-        allen = nb.load(save)
-
-    # return
-    if isinstance(nextbrain, SpatialImage):
-        return allen
-    else:
-        return allen_dat

@@ -12,61 +12,10 @@ from nibabel.spatialimages import SpatialImage
 from numpy.typing import ArrayLike
 
 # internals
-from .to_allen import load_allen_ontology, normalize_name
+from .io import load_ontology
+from .to_allen import normalize_name
 
 PathLike = str | Path
-
-
-def get_allen2simple_map(
-    labels: list[int | str],
-    hide_missing: bool = False,
-) -> np.ndarray:
-    """Compute linear label maps."""
-    # convert integer-like labels to integers
-    labels, _ = [], labels
-    for label in _:
-        try:
-            label = int(label)
-        except ValueError:
-            ...
-        labels.append(label)
-
-    # load lookup tables
-    allen_ont = load_allen_ontology()
-    allen_dtype = 'i4'
-
-    # prepare linear label maps
-    if hide_missing:
-        allen2simple = np.zeros([2**29], dtype=allen_dtype)
-    else:
-        allen2simple = np.arange(2**29, dtype=allen_dtype)
-
-    # Map NextBrain labels to Allen labels
-    def _recurse_map(ont: dict, target: int) -> None:
-        allen2simple[ont['id']] = target
-        for child in ont.get("children", []):
-            _recurse_map(child, target)
-
-    def _recurse(ont: dict) -> None:
-        id = ont["id"]
-        acronym = ont["acronym"]
-        name = ont["name"]
-        name_norm = normalize_name(name)
-        if (
-            (acronym in labels) or
-            (name in labels) or
-            (name_norm in labels) or
-            (id in labels)
-        ):
-            print(ont["name"])
-            _recurse_map(ont, ont['id'])
-        else:
-            for child in ont.get("children", []):
-                _recurse(child)
-
-    _recurse(allen_ont)
-
-    return allen2simple
 
 
 def simplify(
@@ -75,7 +24,28 @@ def simplify(
     hide_missing: bool = False,
     save: PathLike | bool = False,
 ) -> SpatialImage | np.ndarray:
-    """Simplify an Allen segmentation by collapsing nodes in the ontology."""
+    """
+    Simplify an Allen segmentation by collapsing nodes in the ontology.
+
+    Parameters
+    ----------
+    allen : PathLike | nb.SpatialImage | array_like
+        Allen segmentation.
+    labels : list[int | str]
+        Allen labels (ID or name or acronym) to collapse.
+        For each label in this list, all its children are assigned the
+        label ID.
+    hide_missing : bool, default=False
+        If True, labels that are not listed in `labels` are erased from
+        the output label map. Otherwise, their input value is preserved.
+    save:  PathLike | bool = True
+        Whether to save the converted segmentation to disk.
+
+    Returns
+    -------
+    simple : SpatialImage | np.ndarray
+        The simplified segmentation.
+    """
     # load/preprocess data
     if isinstance(allen, (str, Path)):
         allen = nb.load(allen)
@@ -86,17 +56,18 @@ def simplify(
         allen_dat = allen
 
     # prepare linear label maps
-    nextbrain2allen = get_allen2simple_map(labels, hide_missing)
+    allen2simple = get_allen2simple_map(labels, hide_missing)
 
     # perform mapping
-    allen_dat = nextbrain2allen[np.asarray(allen_dat)]
+    simple_dat = allen2simple[np.asarray(allen_dat)]
 
+    # make SpatialImage
     if isinstance(allen, SpatialImage):
         header = allen.header
         header.set_data_dtype(allen_dat.dtype)
-        allen = type(allen)(allen_dat, None, header)
+        simple = type(allen)(simple_dat, None, header)
     else:
-        allen = nb.Nifti1Image(allen_dat)
+        simple = nb.Nifti1Image(simple_dat)
 
     # save
     if save:
@@ -120,11 +91,66 @@ def simplify(
         if save is True:
             save = f"{dirname}/{basename}{ext}"
 
-        nb.save(allen, save)
-        allen = nb.load(save)
+        nb.save(simple, save)
+        simple = nb.load(save)
 
     # return
-    if isinstance(allen, SpatialImage):
-        return allen
+    if isinstance(simple, SpatialImage):
+        return simple
     else:
-        return allen_dat
+        return simple_dat
+
+
+def get_allen2simple_map(
+    labels: list[int | str],
+    hide_missing: bool = False,
+    verbose: bool = False,
+) -> np.ndarray:
+    """Compute linear label maps."""
+    # convert integer-like labels to integers
+    labels, _ = [], labels
+    for label in _:
+        try:
+            label = int(label)
+        except ValueError:
+            ...
+        labels.append(label)
+
+    # load lookup tables
+    allen_ont = load_ontology()
+    allen_dtype = 'i4'
+
+    # prepare linear label maps
+    if hide_missing:
+        allen2simple = np.zeros([2**29], dtype=allen_dtype)
+    else:
+        allen2simple = np.arange(2**29, dtype=allen_dtype)
+
+    # Map NextBrain labels to Allen labels
+    def _recurse_map(ont: dict, target: int) -> None:
+        print("  - " + ont['name'])
+        allen2simple[ont['id']] = target
+        for child in ont.get("children", []):
+            _recurse_map(child, target)
+
+    def _recurse(ont: dict) -> None:
+        id = ont["id"]
+        acronym = ont["acronym"]
+        name = ont["name"]
+        name_norm = normalize_name(name)
+        if (
+            (acronym in labels) or
+            (name in labels) or
+            (name_norm in labels) or
+            (id in labels)
+        ):
+            if verbose:
+                print(ont["name"] + ":")
+            _recurse_map(ont, ont['id'])
+        else:
+            for child in ont.get("children", []):
+                _recurse(child)
+
+    _recurse(allen_ont)
+
+    return allen2simple
