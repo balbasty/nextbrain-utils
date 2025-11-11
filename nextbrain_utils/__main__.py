@@ -430,7 +430,10 @@ parser_simplify.set_defaults(func=_simplify)
 LUTDIR = op.join(op.dirname(__file__), "lut")
 NEXTBRAIN_LUT = op.join(LUTDIR, "NextBrainLUT.txt")
 FREESURFER_LUT = op.join(LUTDIR, "FreeSurferColorLUT.txt")
-SYNTHSEG_LUT = op.join(LUTDIR, "SynthSegLUT.txt")
+ASEG_LUT = op.join(LUTDIR, "ASegLUT.txt")
+SUPERSYNTH_LUT = op.join(LUTDIR, "SuperSynthWholeLUT.txt")
+SUPERSYNTH_CEREBRUM_LUT = op.join(LUTDIR, "SuperSynthCerebrumLUT.txt")
+SUPERSYNTH_EXVIVO_LUT = op.join(LUTDIR, "SuperSynthExVivoLUT.txt")
 
 
 def _allen_lut(args: Namespace) -> None:
@@ -447,9 +450,18 @@ def _allen_lut(args: Namespace) -> None:
     elif args.lut == "freesurfer":
         args.output = args.output or "FreeSurferColorLUT.txt"
         shutil.copyfile(FREESURFER_LUT, args.output)
-    elif args.lut == "synthseg":
-        args.output = args.output or "SyntSegLUT.txt"
-        shutil.copyfile(SYNTHSEG_LUT, args.output)
+    elif args.lut in ("aseg", "synthseg"):
+        args.output = args.output or "ASegLUT.txt"
+        shutil.copyfile(ASEG_LUT, args.output)
+    elif args.lut == "supersynth":
+        args.output = args.output or "SuperSynthWholeLUT.txt"
+        shutil.copyfile(SUPERSYNTH_LUT, args.output)
+    elif args.lut == "supersynth-cerebrum":
+        args.output = args.output or "SuperSynthCerebrumLUT.txt"
+        shutil.copyfile(SUPERSYNTH_CEREBRUM_LUT, args.output)
+    elif args.lut == "supersynth-exvivo":
+        args.output = args.output or "SuperSynthExVivoLUT.txt"
+        shutil.copyfile(SUPERSYNTH_EXVIVO_LUT, args.output)
     else:
         raise ValueError(args.lut)
 
@@ -464,15 +476,21 @@ parser_lut.add_argument(
 )
 parser_lut.add_argument(
     "-l", "--lut",
-    choices=("allen", "allen+dk", "nextbrain", "synthseg", "freesurfer"),
-    default="allen",
+    choices=(
+        "allen", "allen+dk", "nextbrain", "aseg", "freesurfer",
+        "supersynth", "supersynth-cerebrum", "supersynth-exvivo",
+    ),
+    default="allen+dk",
     help=(
         "Lookup table to write: "
         "allen = Labels from the Allen Brain developmental ontology, "
-        "allen+dk = Idem and append Desikan-Killiany cortical labels, "
-        "nextbrain = Default NextBrain labels, "
-        "synthseg = Default SynthSeg labels, "
-        "freesurfer = Complete FreeSurfer colormap."
+        "allen+dk = Allen + append Desikan-Killiany cortical labels, "
+        "nextbrain = NextBrain, "
+        "aseg = ASeg+AParc/SynthSeg, "
+        "supersynth = SuperSynth."
+        "supersynth-cerebrum = SuperSynth (cerebrum mode)."
+        "supersynth-exvivo = SuperSynth (exvivo mode)."
+        "freesurfer = Complete FreeSurfer colormap, "
     )
 )
 parser_lut.add_argument(
