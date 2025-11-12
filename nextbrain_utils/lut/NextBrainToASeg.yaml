@@ -519,7 +519,6 @@ Brain-Stem:
   # Brainstem according to Eugenio's classification,
   # and does actually looks like brainstem when overlapped with synthseg/aseg
   # ---
-  # - 384  # midbrain_(mesencephalon)
   - 451  # interstitial_nucleus_of_cajal
   - 465  # periaqueductal_gray_substance
   - 496  # pretectal_region
@@ -531,7 +530,7 @@ Brain-Stem:
 #   Regions with no mapping in SuperSynth
 # ======================================================================
 
-Unknown:            [0]   # Unknown
+Unknown:            [0]
 Lateral-Ventricle:  [50]  # anterior_horn_of_lateral_ventricle
 Inf-Lat-Vent:       []
 3rd-Ventricle:      []
