@@ -32,6 +32,7 @@ class CortexOntology(StrEnum):
 def to_allen(
     nextbrain: PathLike | SpatialImage | ArrayLike,
     ontology: CortexOntology | str = CortexOntology.gyral,
+    compat16bits: bool = False,
     save: PathLike | bool = False
 ) -> SpatialImage | np.ndarray:
     """
@@ -41,9 +42,14 @@ def to_allen(
     ----------
     nextbrain : PathLike | nb.SpatialImage
         NextBrain segmentation.
-    side : PathLike | nb.SpatialImage | {"left", "right"}, optional
-        Side of the input hemisphere: left, right,
-        or a lateralization mask if the input contains both hemispheres.
+    ontology : CortexOntology | str = CortexOntology.gyral
+        Ontology to use for cortical labels:
+          - developmental: developmental lobules (default)
+        - gyral: gyral-based lobules
+        - desikan-killiany: Desikan-Killiany atlas
+    compat16bits : bool = False
+        Whether to convert labels to be compatible with int16.
+        (i.e. limit maximum label ID to 32768).
     save:  PathLike | bool = True
         Whether to save the converted segmentation to disk.
 
@@ -65,6 +71,34 @@ def to_allen(
 
     # prepare linear label maps
     nextbrain2allen = get_nextbrain2allen_map(ontology)
+
+    if compat16bits:
+        # Most Allen labels use 5 digits (e.g. 10962)
+        # - Some labels use the prefix 146035, followed by 3 digits.
+        #   All suffixes are below between [0, 199].
+        # - Some labels use the prefix 146034, followed by 3 digits.
+        #   All suffixes are below between [600, 999].
+        # - Some labels use the prefix 26644, followed by 4 digits.
+        #   All suffixes are below between [1000, 1999].
+        # - Some labels use the prefix 26749, followed by 4 digits.
+        #   All suffixes are between [9000, 9999].
+        # We can safely remove these two prefixes, ensuring that
+        # labels remain unique and below 32768.
+        #
+        # However, the range [1000, 3000] is already used by the
+        # DK cortical labels, so we also remap the range prefixed
+        # by 26644 to [3000, 4000] instead..
+        prefix_146035 = (nextbrain2allen // 1000) == 146035
+        prefix_146034 = (nextbrain2allen // 1000) == 146034
+        prefix_266441 = (nextbrain2allen // 1000) == 266441
+        prefix_267499 = (nextbrain2allen // 1000) == 267499
+
+        nextbrain2allen[prefix_146035] -= 146035000
+        nextbrain2allen[prefix_146034] -= 146034000
+        nextbrain2allen[prefix_266441] -= (266440000 - 2000)
+        nextbrain2allen[prefix_267499] -= 267490000
+
+        nextbrain2allen = nextbrain2allen.astype('i2')
 
     # perform mapping
     allen_dat = nextbrain2allen[np.asarray(nextbrain_dat)]

@@ -86,7 +86,7 @@ def _to_allen(args: Namespace) -> None:
         raise ValueError("Number of input and output files do not match.")
 
     for inp, out in zip(args.input, args.output):
-        to_allen(inp, args.cortex_ontology, out)
+        to_allen(inp, args.cortex_ontology, args.compat_16bits, out)
 
 
 _desc = """Convert NextBrain labels to Allen Brain labels.
@@ -283,6 +283,10 @@ parser_allen.add_argument(
         "dk = Freesurfer's Desikan-Killiany labels."
     )
 )
+parser_allen.add_argument(
+    "-s16", "--compat-16bits", action="store_true", default=False,
+    help="Whether to convert Allen labels to be compatible with int16."
+)
 parser_allen.set_defaults(func=_to_allen)
 
 
@@ -395,7 +399,13 @@ def _simplify(args: Namespace) -> None:
         raise ValueError("Number of input and output files do not match.")
 
     for inp, out in zip(args.input, args.output):
-        simplify(inp, args.labels, args.delete_missing, out)
+        simplify(
+            inp,
+            args.labels,
+            args.delete_missing,
+            args.compat_16bits,
+            out,
+        )
 
 
 parser_simplify = subparsers.add_parser(
@@ -420,6 +430,10 @@ parser_simplify.add_argument(
     "-d", "--delete-missing", action="store_true", default=False,
     help="Delete regions that are not listed in --labels"
 )
+parser_simplify.add_argument(
+    "-s16", "--compat-16bits", action="store_true", default=False,
+    help="Whether Allen labels are compatible with int16."
+)
 parser_simplify.set_defaults(func=_simplify)
 
 
@@ -442,6 +456,7 @@ def _allen_lut(args: Namespace) -> None:
         allen_lut(
             acronym=args.acronym,
             append_dk="dk" in args.lut,
+            compat16bits=args.compat_16bits,
             save=args.output
         )
     elif args.lut == "nextbrain":
@@ -496,6 +511,10 @@ parser_lut.add_argument(
 parser_lut.add_argument(
     "-a", "--acronym", action="store_true", default=False,
     help="Use Allen Brain acronyms instead of full names."
+)
+parser_lut.add_argument(
+    "-s16", "--compat-16bits", action="store_true", default=False,
+    help="Whether Allen labels are compatible with int16."
 )
 parser_lut.set_defaults(func=_allen_lut)
 

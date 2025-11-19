@@ -22,6 +22,7 @@ def simplify(
     allen: PathLike | SpatialImage | ArrayLike,
     labels: list[int | str],
     hide_missing: bool = False,
+    compat16bits: bool = False,
     save: PathLike | bool = False,
 ) -> SpatialImage | np.ndarray:
     """
@@ -38,6 +39,9 @@ def simplify(
     hide_missing : bool, default=False
         If True, labels that are not listed in `labels` are erased from
         the output label map. Otherwise, their input value is preserved.
+    compat16bits : bool, default=False
+        Whether the input label map is compatible with int16.
+        (i.e. the maximum label ID was limited to 32768).
     save:  PathLike | bool = True
         Whether to save the converted segmentation to disk.
 
@@ -57,6 +61,39 @@ def simplify(
 
     # prepare linear label maps
     allen2simple = get_allen2simple_map(labels, hide_missing)
+
+    if compat16bits:
+        # Most Allen labels use 5 digits (e.g. 10962)
+        # - Some labels use the prefix 146035, followed by 3 digits.
+        #   All suffixes are below between [0, 199].
+        # - Some labels use the prefix 146034, followed by 3 digits.
+        #   All suffixes are below between [600, 999].
+        # - Some labels use the prefix 26644, followed by 4 digits.
+        #   All suffixes are below between [1000, 1999].
+        # - Some labels use the prefix 26749, followed by 4 digits.
+        #   All suffixes are between [9000, 9999].
+        # We can safely remove these two prefixes, ensuring that
+        # labels remain unique and below 32768.
+        #
+        # However, the range [1000, 3000] is already used by the
+        # DK cortical labels, so we also remap the range prefixed
+        # by 26644 to [3000, 4000] instead..
+        prefix_146035 = (allen2simple // 1000) == 146035
+        prefix_146034 = (allen2simple // 1000) == 146034
+        prefix_266441 = (allen2simple // 1000) == 266441
+        prefix_267499 = (allen2simple // 1000) == 267499
+
+        allen2simple[prefix_146035] -= 146035000
+        allen2simple[prefix_146034] -= 146034000
+        allen2simple[prefix_266441] -= (266440000 - 2000)
+        allen2simple[prefix_267499] -= 267490000
+
+        allen2simple[:200] = allen2simple[146035000:146035200]
+        allen2simple[600:1000] = allen2simple[146034600:146035000]
+        allen2simple[3000:4000] = allen2simple[266441000:266442000]
+        allen2simple[9000:10000] = allen2simple[267499000:267500000]
+
+        allen2simple = allen2simple[:32768].astype('i2')
 
     # perform mapping
     simple_dat = allen2simple[np.asarray(allen_dat)]

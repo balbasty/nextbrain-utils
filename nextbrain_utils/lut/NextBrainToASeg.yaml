@@ -33,51 +33,16 @@ Cerebellum-White-Matter:
 
   # --- cerebellar_deep_nuclei ---
   - 721  # dentate_(lateral)_nucleus
-  - 714  # interpositus_(intermediate)_nucleus
   - 751  # medial_interpositus_(globose)_nucleus
   - 752  # lateral_interpositus_(emboliform)_nucleus
   - 715  # fastigial_(medial)_nucleus
-  - 753  # basal_interstitial_nucleus_of_cerebellum
 
 Cerebellum-Cortex:
-  - 806  # cerebellar_cortex
-  - 613  # molecular_layer_of_VeA
-  - 614  # Purkinje_cell_layer_of_VeA
-  - 615  # granular_cell_layer_of_VeA
-  - 801  # molecular_layer_of_VePs
-  - 802  # Purkinje_cell_layer_of_VePs
-  - 803  # granular_cell_layer_of_VePs
-  - 768  # molecular_layer_of_VePi
-  - 769  # Purkinje_cell_layer_of_VePi
-  - 770  # granular_cell_layer_of_VePi
-  - 742  # molecular_layer_of_VeF
-  - 743  # Purkinje_cell_layer_of_VeF
-  - 744  # granular_cell_layer_of_VeF
-  - 595  # molecular_layer_of_PVA
-  - 596  # Purkinje_cell_layer_of_PVA
-  - 597  # granular_cell_layer_of_PVA
-  - 796  # molecular_layer_of_PVPs
-  - 665  # Purkinje_cell_layer_of_PVPs
-  - 797  # granular_cell_layer_of_PVPs
-  - 745  # molecular_layer_of_PVPi
-  - 746  # Purkinje_cell_layer_of_PVPi
-  - 747  # granular_cell_layer_of_PVPi
-  - 606  # molecular_layer_of_CBLA
-  - 607  # Purkinje_cell_layer_of_CBLA
-  - 608  # granular_cell_layer_of_CBLA
-  - 638  # molecular_layer_of_CBLPs
-  - 639  # Purkinje_cell_layer_of_CBLPs
-  - 640  # granular_cell_layer_of_CBLPs
-  - 748  # molecular_layer_of_CBLPi
-  - 749  # Purkinje_cell_layer_of_CBLPi
-  - 750  # granular_cell_layer_of_CBLPi
-  - 641  # molecular_layer_of_CBLF
-  - 642  # Purkinje_cell_layer_of_CBLF
-  - 643  # granular_cell_layer_of_CBLF
+  - 595  # molecular_layer_of_pva
+  - 597  # granular_cell_layer_of_pva
 
 Thalamus:
   - 218  # thalamus
-  - 824  # dorsal`_thalamus
   - 219  # anterodorsal_nucleus_of_thalamus
   - 252  # anteromedial_nucleus_of_thalamus
   - 220  # anteroventral_nucleus_of_thalamus
@@ -108,29 +73,15 @@ Thalamus:
   - 424  # ventral_posterior_inferior_nucleus
   - 442  # basal_ventral_medial_nucleus
   - 274  # ventral_medial_nucleus_of_thalamus
-  - 823  # lateral_geniculate_nucleus
   - 484  # dorsal_lateral_geniculate_nucleus
-  - 476  # magnocellular_layer_of_DLG
-  - 485  # layer_1_of_DLG
-  - 486  # layer_2_of_DLG
-  - 459  # parvicellular_layer_of_DLG
-  - 509  # layer_3_of_DLG
-  - 487  # layer_4_of_DLG
-  - 488  # layer_5_of_DLG
-  - 489  # layer_6_of_DLG
-  - 490  # S_layer_of_DLG
-  - 491  # koniocellular_layer_of_DLG
-  - 477  # pregeniculate_nucleus
   - 504  # dorsal_medial_geniculate_nucleus
   - 505  # ventral_medial_geniculate_nucleus
   - 510  # magnocellular_(medial)_nucleus
-  - 511  # limitans_part_of_medial_geniculate_nucleus
   - 478  # posterior_nucleus_of_thalamus
   - 492  # limitans_nucleus
   - 512  # suprageniculate_nucleus_of_thalamus
   - 425  # lateral_division_of_central_lateral_nucleus
   - 443  # dorsal_division_of_central_lateral_nucleus
-  - 460  # caudal_division_of_central_lateral_nucleus
   - 284  # central_medial_nucleus_of_thalamus
   - 285  # paracentral_nucleus_of_thalamus
   - 303  # central_dorsal_nucleus_of_thalamus
@@ -169,7 +120,6 @@ Thalamus:
 
 Caudate:
   - 48   # head_of_caudate
-  - 49   # peri-caudate_ependymal_and_subependymal_zone
   - 118  # body_of_caudate
   - 393  # tail_of_caudate
 
@@ -183,71 +133,59 @@ Putamen:
 Pallidum:
   - 119  # external_segment_of_globus_pallidus
   - 206  # internal_segment_of_globus_pallidus
-  - 281  # entopeduncular_nucleus
 
 Hippocampus:
-  - 500  # hippocampus_(hippocampal_formation)
   - 364  # molecular_layer_of_uncal_dentate_gyrus
   - 365  # granular_layer_of_uncal_dentate_gyrus
-  - 366  # subgranular_zone_of_uncal_dentate_gyrus
   - 367  # polyform_layer_of_uncal_dentate_gyrus
-  - 392  # rostral_dentate_gyrus
   - 404  # molecular_layer_of_rostral_dentate_gyrus
   - 405  # granular_layer_of_rostral_dentate_gyrus
-  - 406  # subgranular_zone_of_rostral_dentate_gyrus
   - 407  # polyform_layer_of_rostral_dentate_gyrus
-  - 626  # caudal_dentate_gyrus
   - 558  # molecular_layer_of_caudal_dentate_gyrus
   - 559  # granular_layer_of_caudal_dentate_gyrus
-  - 560  # subgranular_zone_of_caudal_dentate_gyrus
   - 561  # polyform_layer_of_caudal_dentate_gyrus
-  - 339  # stratum_lacunosum-moleculare_of_uncal_CA1
-  - 340  # stratum_radiatum_of_uncal_CA1
-  - 341  # stratum_pyramidale_of_uncal_CA1
-  - 342  # stratum_oriens_of_uncal_CA1
-  - 343  # stratum_lacunosum-moleculare_of_rostral_CA1
-  - 344  # stratum_radiatum_of_rostral_CA1
-  - 345  # stratum_pyramidale_of_rostral_CA1
-  - 346  # stratum_oriens_of_rostral_CA1
-  - 562  # stratum_lacunosum-moleculare_of_caudal_CA1
-  - 563  # stratum_radiatum_of_caudal_CA1
-  - 564  # stratum_pyramidale_of_caudal_CA1
-  - 565  # stratum_oriens_of_caudal_CA1
-  - 368  # stratum_lacunosum-moleculare_of_uncal_CA2
-  - 369  # stratum_radiatum_of_uncal_CA2
-  - 370  # stratum_pyramidale_of_uncal_CA2
-  - 371  # stratum_oriens_of_uncal_CA2
-  - 408  # stratum_lacunosum-moleculare_of_rostral_CA2
-  - 409  # stratum_radiatum_of_rostral_CA2
-  - 410  # stratum_pyramidale_of_rostral_CA2
-  - 411  # stratum_oriens_of_rostral_CA2
-  - 566  # stratum_lacunosum-moleculare_of_caudal_CA2
-  - 567  # stratum_radiatum_of_caudal_CA2
-  - 568  # stratum_pyramidale_of_caudal_CA2
-  - 569  # stratum_oriens_of_caudal_CA2
-  - 372  # stratum_lacunosum-moleculare_of_uncal_CA3
-  - 373  # stratum_lucidum__of_uncal_CA3
-  - 374  # stratum_pyramidale_of_uncal_CA3
-  - 375  # stratum_oriens_of_uncal_CA3
-  - 418  # stratum_lacunosum-moleculare_of_rostral_CA3
-  - 419  # stratum_lucidum__of_rostral_CA3
-  - 420  # stratum_pyramidale_of_rostral_CA3
-  - 421  # stratum_oriens_of_rostral_CA3
-  - 570  # caudal_CA3
-  - 571  # stratum_lacunosum-moleculare_of_caudal_CA3
-  - 572  # stratum_lucidum__of_caudal_CA3
-  - 573  # stratum_pyramidale_of_caudal_CA3
-  - 574  # stratum_oriens_of_caudal_CA3
-  - 422  # pyramidal_cells_of_uncal_CA4
-  - 432  # pyramidal_cells_of_rostral_CA4
-  - 575  # pyramidal_cells_of_caudal_CA4
+  - 339  # stratum_lacunosum-moleculare_of_uncal_ca1
+  - 340  # stratum_radiatum_of_uncal_ca1
+  - 341  # stratum_pyramidale_of_uncal_ca1
+  - 342  # stratum_oriens_of_uncal_ca1
+  - 343  # stratum_lacunosum-moleculare_of_rostral_ca1
+  - 344  # stratum_radiatum_of_rostral_ca1
+  - 345  # stratum_pyramidale_of_rostral_ca1
+  - 346  # stratum_oriens_of_rostral_ca1
+  - 562  # stratum_lacunosum-moleculare_of_caudal_ca1
+  - 563  # stratum_radiatum_of_caudal_ca1
+  - 564  # stratum_pyramidale_of_caudal_ca1
+  - 565  # stratum_oriens_of_caudal_ca1
+  - 368  # stratum_lacunosum-moleculare_of_uncal_ca2
+  - 369  # stratum_radiatum_of_uncal_ca2
+  - 370  # stratum_pyramidale_of_uncal_ca2
+  - 371  # stratum_oriens_of_uncal_ca2
+  - 408  # stratum_lacunosum-moleculare_of_rostral_ca2
+  - 409  # stratum_radiatum_of_rostral_ca2
+  - 410  # stratum_pyramidale_of_rostral_ca2
+  - 411  # stratum_oriens_of_rostral_ca2
+  - 566  # stratum_lacunosum-moleculare_of_caudal_ca2
+  - 567  # stratum_radiatum_of_caudal_ca2
+  - 568  # stratum_pyramidale_of_caudal_ca2
+  - 569  # stratum_oriens_of_caudal_ca2
+  - 372  # stratum_lacunosum-moleculare_of_uncal_ca3
+  - 373  # stratum_lucidum__of_uncal_ca3
+  - 374  # stratum_pyramidale_of_uncal_ca3
+  - 375  # stratum_oriens_of_uncal_ca3
+  - 418  # stratum_lacunosum-moleculare_of_rostral_ca3
+  - 419  # stratum_lucidum__of_rostral_ca3
+  - 420  # stratum_pyramidale_of_rostral_ca3
+  - 421  # stratum_oriens_of_rostral_ca3
+  - 571  # stratum_lacunosum-moleculare_of_caudal_ca3
+  - 572  # stratum_lucidum__of_caudal_ca3
+  - 573  # stratum_pyramidale_of_caudal_ca3
+  - 574  # stratum_oriens_of_caudal_ca3
+  - 422  # pyramidal_cells_of_uncal_ca4
+  - 432  # pyramidal_cells_of_rostral_ca4
+  - 575  # pyramidal_cells_of_caudal_ca4
   - 326  # uncal_subiculum
   - 347  # rostral_subiculum
   - 576  # caudal_subiculum
-  - 327  # uncal_prosubiculum
-  - 348  # rostral_prosubiculum
-  - 577  # caudal_prosubiculum
-  - 644  # supracallosal_subiculum
 
   # ---
   # not hippocampus proper (transition area)
@@ -266,37 +204,15 @@ Hippocampus:
 Amygdala:
   - 214  # amygdaloid_complex
   - 215  # anterior_amygdaloid_area
-  - 376  # central_nuclear_group
   - 277  # medial_subdivision_of_central_nucleus
   - 278  # lateral_subdivision_of_central_nucleus
-  - 249  # dorsal_subdivision_of_CoA
   - 238  # ventral_subdivision_of_CoA
-  - 292  # dorsal_subdivision_of_CoP
-  - 300  # venrtral_subdivision_of_CoP
-  - 332  # marginal_layer_of_posterior_cortical_nucleus
   - 279  # rostral_subdivision_of_medial_nucleus
-  - 319  # caudal_subdivision_of_medial_nucleus
   - 301  # amygdalohippocampal_area
   - 377  # lateral_nucleus
-  - 250  # dorsal_division_of_lateral_nucleus
-  - 261  # intermediate_division_of_lateral_nucleus
-  - 262  # ventral_division_of_lateral_nucleus
-  - 293  # glomerular_subdivision_of_lateral_nucleus
   - 216  # basolateral_nucleus_(basal_nucleus)
-  - 263  # dorsal_(magnocellular)_division_of_basolateral_nucleus
-  - 294  # dorsal_lateral_subdivision_of_basolateral_nucleus
-  - 239  # intermediate_division_of_basolateral_nucleus
-  - 251  # ventral_(parvicellular)_division_of_basolateral_nucleus
-  - 264  # ventral_lateral_subdivision_of_basolateral_nucleus
-  - 265  # ventral_medial_subdivision_of_basolateral_nucleus
-  - 280  # dorsal_division_of_basomedial_nucleus
   - 217  # ventral_division_of_basomedial_nucleus
-  - 302  # medial_division_of_basomedial_nucleus
   - 240  # paralaminar_nucleus
-  - 266  # glomerular_part_of_paralaminar_nucleus
-  - 170  # endopiriform_nucleus
-  - 267  # Intercalated_nucleus_of_amygdala
-  - 241  # intramedullary_gray_of_the_amygdala
 
   # ---
   # not amygdala proper (transition area)
@@ -370,145 +286,58 @@ Claustrum:
   - 102  # claustrum
   - 174  # temporal_claustrum
 
-
 Brain-Stem:
   - 580  # pons
   - 414  # pontine_nucleus
-  - 532  # reticulotegmental_nucleus
   - 682  # abducens_nucleus
   - 666  # facial_nucleus
   - 630  # motor_nucleus_of_trigeminal_nerve
-  - 722  # cochlear_nuclei
   - 731  # dorsal_cochlear_nucleus
-  - 732  # granular_cell_layer_of_cochlear_nuclei
   - 689  # ventral_cochlear_nucleus
   - 659  # principal_sensory_nucleus_of_trigeminal_nerve
   - 690  # lateral_vestibular_nucleus
   - 683  # superior_vestibular_nucleus
-  - 609  # ventral_tegmental_nucleus
   - 598  # dorsal_nucleus_of_lateral_lemniscus
-  - 587  # intermediate_nucleus_of_lateral_lemniscus
   - 599  # ventral_nucleus_of_lateral_lemniscus
   - 647  # nucleus_of_trapezoid_body
-  - 648  # periolivary_nuclei
   - 660  # lateral_superior_olivary_nucleus
   - 649  # medial_superior_olive
-  - 661  # superior_paraolivary_nucleus
-  - 650  # raphe_pontis_nucleus
   - 521  # dorsal_raphe_nucleus
-  - 522  # median_raphe_nucleus
-  - 650  # raphe_pontis_nucleus
   - 527  # Pontine_reticular_formation
   - 546  # lateral_parabrachial_nucleus
   - 581  # medial_parabrachial_nucleus
-  - 532  # reticulotegmental_nucleus
   - 589  # nucleus_coeruleus
-  - 621  # subcoeruleus_nucleus
-  - 616  # Barrington's_nucleus
   - 610  # central_gray_of_pons
-  - 622  # central_nucleus_of_acoustic_tract
-  - 582  # dorsal_tegmental_nucleus
-  - 651  # dorsomedial_tegmental_area
-  - 691  # ependyma_and_subependymal_layers_of_pons
-  - 623  # epicoeruleus_nucleus
-  - 652  # pontine_gamma_nucleus
-  - 667  # intertrigeminal_nucleus
-  - 590  # Koelliker-Fuse_nucleus
-  - 547  # laterodorsal_tegmental_nucleus
-  - 723  # medial_pericuneate_nucleus
-  - 668  # perifacial_zone
-  - 627  # ventrolateral_tegmental_nucleus
-  - 692  # supragenual_nucleus
   - 662  # myelencephalon_(medulla_oblongata)
-  - 628  # arcuate_nucleus_of_medulla_oblongata
-  - 653  # conterminal_nucleus
   - 693  # ambiguus_nucleus
   - 724  # hypoglossal_nucleus
   - 725  # dorsal_motor_nucleus_of_the_vagus_(vagal_nucleus)
   - 717  # solitary_nucleus
   - 669  # spinal_trigeminal_nucleus
-  - 684  # interstial_nucleus_of_the_vestibulocochlear_nerve
   - 694  # medial_vestibular_nucleus
-  - 670  # nucleus_of_origin_of_vestibular_efferents_of_vestibular_nerve
   - 703  # spinal_(inferior)_vestibular_nucleus
   - 726  # external_(accessory/lateral)_cuneate_nucleus
   - 755  # cuneate_nucleus
   - 756  # gracile_nucleus
-  - 727  # cribriform_nucleus
-  - 710  # caudal_dorsal_paramedian_nucleus
-  - 758  # Cap_of_Kooy_of_medial_nucleus
-  - 734  # intercalated_nucleus_of_medulla
-  - 704  # interpositus_nucleus
-  - 686  # pontobulbar_nucleus
-  - 705  # prepositus_hypoglossal_nucleus
   - 695  # medullary_reticular_formation
-  - 672  # gigantocellular_reticular_nuclei
-  - 673  # lateral_paragigantocellular_nucleus
-  - 699  # lateral_reticular_nucleus_(principal_part)
-  - 728  # linear_nucleus_of_hindbrain
-  - 674  # raphe_magnus_nucleus
-  - 706  # raphe_obscurus_nucleus
-  - 759  # raphe_pallidus_nucleus
-  - 631  # nucleus_pararaphales
   - 765  # central_gray_of_medulla_oblongata
-  - 707  # ependyma_and_subependymal_layers_of_the_medulla
-  - 632  # endolemniscal_nucleus
-  - 711  # epifascicular_nucleus
-  - 729  # nucleus_of_Roller
-  - 675  # paratrigeminal_nucleus
-  - 736  # peritrigeminal_nucleus
-  - 696  # pre-Botzinger_complex
-  - 778  # retroambiguous_nucleus
   - 771  # spinal_accessory_(supraspinal)_nucleus
   - 611  # white_matter_of_hindbrain
   - 655  # amiculum_of_the_olive
   - 591  # central_tegmental_tract
-  - 760  # cuneate_fasciculus
-  - 772  # decussation_of_medial_lemniscus
-  - 826  # dorsal_trigeminothalamic_tract
-  - 676  # genu_of_the_facial_nerve
-  - 761  # gracile_fasciculus
-  - 678  # hilus_of_the_inferior_olive
   - 697  # inferior_cerebellar_peduncle
-  - 841  # spinocerebellar_tract
-  - 773  # internal_arcuate_fibers
   - 515  # lateral_lemniscus
-  - 438  # longitudinal_fasciculus_of_the_pons
   - 499  # medial_lemniscus
   - 528  # medial_longitudinal_fasciculus
   - 600  # mesencephalic_trigeminal_tract
   - 543  # middle_cerebellar_peduncle
   - 415  # pontocerebellar_tract
-  - 777  # pyramidal_decussation
-  - 533  # pyramidal_tract
-  - 474  # corticobulbar_tract
   - 779  # corticospinal_tract
   - 687  # solitary_tract
   - 592  # spinal_lemniscus_in_hindbrain
   - 677  # spinal_trigeminal_tract
-  - 708  # tectospinal_tract
-  - 633  # trapezoid_body
-  - 836  # ventral_trigeminothalamic_tract
-  - 634  # vestibulomesencephalic_tract
-  - 612  # fourth_ventricle
-  - 762  # central_canal_of_medulla_oblongata
-  - 625  # lobule_I_(lingula)
-  - 636  # lobule_VI_(declive_and_simplex_lobule)
-  - 663  # lobule_VIIAf/crus_I_(folium_and_superior_semilunar_lobule)
-  - 712  # lobule_VIIAt/crus_II_(tuber_and_inferior_semilunar_lobule)
-  - 737  # lobule_VIIB_(gracile_lobule)
-  - 740  # lobule_IX_(uvula_and_tosil)
-  - 637  # lobule_X_(nodulus_and_flocculus)
-  - 601  # root_of_abducens_nerve
   - 624  # root_of_facial_nerve
-  - 583  # motor_root_of_trigeminal_nerve
-  - 584  # sensory_root_of_trigeminal_nerve
-  - 629  # root_of_vestibulocochlear_nerve
   - 617  # rostral_(anterior)_medullary_velum
-  - 763  # area_postrema
-  - 718  # root_of_hypoglossal_nerve
-  - 700  # root_of_glossopharyngeal_nerve
-  - 709  # root_of_vagus_nerve
 
   # --- brainstem according to Eugenio's classification ---
   - 114  # optic_nerve

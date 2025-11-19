@@ -16,6 +16,7 @@ PathLike = str | Path
 def allen_lut(
     acronym: bool = False,
     append_dk: bool = False,
+    compat16bits: bool = False,
     save: TextIO | PathLike | bool = False,
 ) -> list[tuple[int, str, int, int, int, int]]:
     """
@@ -28,6 +29,9 @@ def allen_lut(
         If True, use acronyms instead of full names for the label names.
     append_dk : bool, default=False
         If True, append Desikan-Killiany labels to the LUT.
+    compat16bits : bool, default=False
+        Whether to convert labels to be compatible with int16.
+        (i.e. limit maximum label ID to 32768).
     save:  PathLike | bool = True
         Whether to save the LUT to disk.
 
@@ -42,10 +46,13 @@ def allen_lut(
             save = "AllenBrainLUT.txt"
         if not hasattr(save, "write"):
             with open(save, "w") as fileobj:
-                return allen_lut(acronym, append_dk, fileobj)
+                return allen_lut(acronym, append_dk, compat16bits, fileobj)
 
     lut = []
-    for line in make_allen_lut(acronym=acronym):
+    for line in make_allen_lut(
+        acronym=acronym,
+        compat16bits=compat16bits
+    ):
         lut.append(line)
         if save:
             save.write(_line2str(*line) + "\n")
@@ -60,7 +67,9 @@ def allen_lut(
 
 
 def make_allen_lut(
-    fname: PathLike = PATH_ALLEN, acronym: bool = False
+    fname: PathLike = PATH_ALLEN,
+    acronym: bool = False,
+    compat16bits: bool = False,
 ) -> Iterator[tuple[int, str, int, int, int, int]]:
     """Generate lines of a freesurfer lookup table from the Allen ontology."""
     with open(fname) as f:
@@ -70,6 +79,17 @@ def make_allen_lut(
         name = ont["acronym" if acronym else "name"]
         name = name.replace(" ", "_")
         label = ont["id"]
+
+        if compat16bits:
+            if (label // 1000) == 146035:
+                label -= 146035000
+            elif (label // 1000) == 146034:
+                label -= 146034000
+            elif (label // 1000) == 266441:
+                label -= (266440000 - 2000)
+            elif (label // 1000) == 267499:
+                label -= 267490000
+
         r, g, b = _hex2rgb(ont["color_hex_triplet"])
         yield (label, name, r, g, b, 0)
         for child in ont.get("children", []):
