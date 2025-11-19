@@ -29,9 +29,7 @@ The tools provided in this package allow NextBrain label maps to be
 converted to Allen Brain label maps. It also allows Allen Brain label
 maps to be simplified by collapsing labels along levels of its ontology.
 
-## Examples
-
-#### Combine both NextBrain hemispheres into a single file
+## Combine both NextBrain hemispheres into a single file
 
 ```shell
 nextbrain-utils combine \
@@ -44,7 +42,7 @@ nextbrain-utils combine \
 <img width="594" height="530" alt="image" src="https://github.com/user-attachments/assets/5e357bf4-0256-4062-b813-3a0305ee8183" />
 
 
-#### Convert NextBrain labels to Allen labels
+## Convert NextBrain labels to Allen labels
 
 ```shell
 nextbrain-utils allen \
@@ -98,7 +96,7 @@ nextbrain-utils allen \
 <img width="594" height="530" alt="image" src="https://github.com/user-attachments/assets/d98b2453-cd7b-4c2c-bf9c-9be2a9e4b9a5" />
 
 
-#### Simplify an Allen segmentation map
+## Simplify an Allen segmentation map
 
 ```shell
 nextbrain-utils simplify \
@@ -118,7 +116,7 @@ Then Allen ontology can br browsed online:
 
 <img width="594" height="530" alt="image" src="https://github.com/user-attachments/assets/8c5689bb-95db-4b0c-afb8-2e2ad9e7f09d" />
 
-#### Convert NextBrain labels to ASeg+AParc labels
+## Convert NextBrain labels to ASeg+AParc labels
 
 ```shell
 nextbrain-utils aseg \
@@ -129,7 +127,7 @@ nextbrain-utils aseg \
 
 <img width="594" height="530" alt="image" src="https://github.com/user-attachments/assets/06f3a3e2-fff6-4ae6-9697-21f822594c05" />
 
-#### Convert NextBrain labels to SuperSynth labels
+## Convert NextBrain labels to SuperSynth labels
 
 ```shell
 nextbrain-utils supersynth \
@@ -140,7 +138,7 @@ nextbrain-utils supersynth \
 
 <img width="594" height="530" alt="image" src="https://github.com/user-attachments/assets/56c6e150-2501-4494-b15a-1eee8f4062c6" />
 
-#### Generate an Allen lookup table compatible with Freesurfer
+## Generate an Allen lookup table compatible with Freesurfer
 
 ```shell
 nextbrain-utils lut \
