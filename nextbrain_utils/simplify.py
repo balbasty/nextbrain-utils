@@ -165,7 +165,6 @@ def get_allen2simple_map(
 
     # Map NextBrain labels to Allen labels
     def _recurse_map(ont: dict, target: int) -> None:
-        print("  - " + ont['name'])
         allen2simple[ont['id']] = target
         for child in ont.get("children", []):
             _recurse_map(child, target)
